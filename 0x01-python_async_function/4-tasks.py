@@ -20,7 +20,9 @@ async def task_wait_n(n: int, max_delay: int) -> List[float]:
     sorted_list: List[float] = []
     delay_list: List[float] = []
     for i in range(n):
-        delay_list.append(wait_random(max_delay))
-    for i in asyncio.as_completed(delay_list):
-        sorted_list.append(await i)
-    return sorted_list
+        delay_task = task_wait_random(max_delay)
+        delay_task.add_done_callback(lambda x: delay_list.append(x.result()))
+        sorted_list.append(delay_task)
+    for sort in sorted_list:
+        await sort
+    return delay_list
