@@ -45,3 +45,12 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(example, ["Thirsty", "Hungry"])
             testit.assert_called_once()
             mocked_getjson.assert_called_once()
+
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False)
+        ])
+    def test_has_license(self, test_dict, test_key, test_result):
+        """test has license with parameters"""
+        example = GithubOrgClient.has_license(test_dict, test_key)
+        self.assertEqual(example, test_result)
