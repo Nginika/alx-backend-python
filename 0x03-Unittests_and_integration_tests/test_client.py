@@ -58,24 +58,19 @@ class TestGithubOrgClient(unittest.TestCase):
 
 
 @parameterized_class(['org_payload', 'repos_payload',
-                     'expected_repos', 'apache2_repos'],
-                     TEST_PAYLOAD
-                     )
+                      'expected_repos', 'apache2_repos'], TEST_PAYLOAD)
 class TestIntegrationGithubOrgClient(unittest.TestCase):
-    """Integration test for public_repos"""
-
+    """Integration test"""
     @classmethod
     def setUpClass(cls):
-        """setup for each method"""
-        cls.patcher = patch('requests.get', side_effect=[
-                            cls.org_payload, cls.repos_payload
-                            ])
-        cls.test_get = cls.patcher.start()
+        cls.get_patcher = patch('requests.get', side_effect=[
+            cls.org_payload, cls.repos_payload
+        ])
+        cls.mocked_get = cls.get_patcher.start()
 
     @classmethod
     def tearDownClass(cls):
-        """teardown after each method"""
-        cls.patcher.stop()
+        cls.get_patcher.stop()
 
     def test_public_repos(self):
         """test public repos """
