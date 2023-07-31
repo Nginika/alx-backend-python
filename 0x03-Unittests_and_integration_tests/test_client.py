@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Test for githuborgclient class methods"""
 import unittest
-from parameterized import parameterized
+from parameterized import parameterized, parameterized_class
 from unittest.mock import patch, Mock, PropertyMock
 from utils import access_nested_map, get_json, memoize
 from client import GithubOrgClient
+from fixtures import TEST_PAYLOAD
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -54,3 +55,21 @@ class TestGithubOrgClient(unittest.TestCase):
         """test has license with parameters"""
         example = GithubOrgClient.has_license(test_dict, test_key)
         self.assertEqual(example, test_result)
+
+
+@parameterized_class(['org_payload', 'repos_payload',
+                     'expected_repos', 'apache2_repos'],
+                     TEST_PAYLOAD
+                     )
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """Integration test for public_repos"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.patcher = patch("utils.requests.get")
+        cls.patcher.side_effect = TEST_PAYLOAD
+        self.test_get = self.patcher.start()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.patcher.stop()
