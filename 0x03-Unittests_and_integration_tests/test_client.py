@@ -69,9 +69,15 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         """setup for each method"""
         cls.patcher = patch("utils.requests.get")
         cls.patcher.side_effect = TEST_PAYLOAD
-        self.test_get = self.patcher.start()
+        cls.test_get = cls.patcher.start()
 
     @classmethod
     def tearDownClass(cls):
         """teardown after each method"""
         cls.patcher.stop()
+
+    def test_public_repos(self):
+        """test public repos """
+
+    def test_public_repos_with_license(self):
+        """test public with license"""
